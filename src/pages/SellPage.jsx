@@ -15,11 +15,19 @@ function SellPage() {
     dateOfManufacture: '',
     dateOfPurchase: '',
     condition: '',
+    productImage: null,
+    receiptImage: null,
   });
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({ ...prevData, [name]: value }));
+    const { name, value, type } = e.target;
+
+    // Handle file inputs separately
+    if (type === 'file') {
+      setFormData((prevData) => ({ ...prevData, [name]: e.target.files[0] }));
+    } else {
+      setFormData((prevData) => ({ ...prevData, [name]: value }));
+    }
   };
 
   const handleSave = () => {
@@ -128,7 +136,12 @@ function SellPage() {
           </Typography>
           <Button component="label" variant="contained" startIcon={<CloudUploadIcon />}>
             Upload file
-            <VisuallyHiddenInput type="file" />
+            <VisuallyHiddenInput 
+              type="file" 
+              name="productImage"
+              onChange={handleChange}
+              accept="image/*,video/*"
+              />
           </Button>
         </div>
 
@@ -137,8 +150,12 @@ function SellPage() {
             Reciept Image:
           </Typography>
           <Button component="label" variant="contained" startIcon={<CloudUploadIcon />}>
-            Upload file
-            <VisuallyHiddenInput type="file" />
+            Upload Reciept
+            <VisuallyHiddenInput 
+              type="file" 
+              name="receiptImage"
+              onChange={handleChange}
+              accept="image/*,video/*" />
           </Button>
         </div>
 
