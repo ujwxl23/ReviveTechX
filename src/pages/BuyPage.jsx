@@ -11,32 +11,63 @@ import Typography from '@mui/material/Typography';
 import Navbar from '../componets/Navbar'
 
 function BuyPage() {
+
+  const cardData = [
+  {
+    image: '/static/images/cards/contemplative-reptile.jpg',
+    title: 'Microprocessors 1',
+    description: 'Lizards are a widespread group of squamate reptiles...',
+  },
+  {
+    image: '/static/images/cards/contemplative-reptile.jpg',
+    title: 'Microprocessors 2',
+    description: 'Lizards are a widespread group of squamate reptiles...',
+  },
+  {
+    image: '/static/images/cards/contemplative-reptile.jpg',
+    title: 'Microprocessors 2',
+    description: 'Lizards are a widespread group of squamate reptiles...',
+  },
+  {
+    image: '/static/images/cards/contemplative-reptile.jpg',
+    title: 'Microprocessors 2',
+    description: 'Lizards are a widespread group of squamate reptiles...',
+  },
+  ];
+
+  const cardContainerStyle = {
+  display: 'flex',
+  justifyContent: 'space-between',
+  flexWrap: 'wrap',
+  gap: '16px',
+};
+
+  
   return (
     <div>
       <Navbar/>
       Marketplace
       <br/>
-      <Card sx={{ maxWidth: 345 }}>
-      <CardMedia
-        sx={{ height: 140 }}
-        image="/static/images/cards/contemplative-reptile.jpg"
-        title="green iguana"
-      />
-      <CardContent>
-        <Typography gutterBottom variant="h5" component="div">
-          Microprocessors
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          Lizards are a widespread group of squamate reptiles, with over 6,000
-          species, ranging across all continents except Antarctica
-        </Typography>
-      </CardContent>
-      <CardActions>
-        <Button size="small">Buy</Button>
-        <Button size="small">Verification</Button>
-      </CardActions>
-    </Card>
-
+      <h2>Marketplace</h2>
+      <div style={cardContainerStyle}>
+        {cardData.map((card, index) => (
+          <Card key={index} sx={{ maxWidth: 345, flex: '1 0 calc(33.33% - 16px)' }}>
+            <CardMedia sx={{ height: 140 }} image={card.image} title={card.title} />
+            <CardContent>
+              <Typography gutterBottom variant="h5" component="div">
+                {card.title}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                {card.description}
+              </Typography>
+            </CardContent>
+            <CardActions>
+              <Button size="small">Buy</Button>
+              <Button size="small">Verification</Button>
+            </CardActions>
+          </Card>
+        ))}
+      </div>
     </div>
   )
 }
