@@ -75,7 +75,7 @@ function SellPage() {
             Model Number:
           </Typography>
           <TextField
-            name="ModelNumber"
+            name="modelNumber"
             label="Model Number"
             variant="outlined"
             value={formData.modelNumber}
@@ -88,7 +88,7 @@ function SellPage() {
             Date of Manufacture:
           </Typography>
           <TextField
-            name="DateOfManufacture"
+            name="dateOfManufacture"
             label="Date Of Manufacture"
             variant="outlined"
             value={formData.dateOfManufacture}
@@ -101,7 +101,7 @@ function SellPage() {
             Date of Purchase:
           </Typography>
           <TextField
-            name="DateOfPurchase"
+            name="dateOfPurchase"
             label="Date Of Purchase"
             variant="outlined"
             value={formData.dateOfPurchase}
@@ -114,7 +114,7 @@ function SellPage() {
             Condition:
           </Typography>
           <TextField
-            name="Condition"
+            name="condition"
             label="Condition"
             variant="outlined"
             value={formData.condition}
