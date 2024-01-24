@@ -5,8 +5,28 @@ import Typography from '@mui/material/Typography';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import Button from '@mui/material/Button';
 import { styled } from '@mui/material/styles';
+import { initializeApp } from "firebase/app";
+import { getDatabase, ref, push, set, update } from 'firebase/database';
+import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 function SellPage() {
+
+  const firebaseConfig = {
+  apiKey: "AIzaSyAK6jGldivi_kEIzwoADcEPaPOheluRp0g",
+  authDomain: "revivetech-59b40.firebaseapp.com",
+  databaseURL: "https://revivetech-59b40-default-rtdb.firebaseio.com",
+  projectId: "revivetech-59b40",
+  storageBucket: "revivetech-59b40.appspot.com",
+  messagingSenderId: "659508121680",
+  appId: "1:659508121680:web:8450a79a60e22bad750155",
+  measurementId: "G-8HM1MZPRPQ"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const database = getDatabase(app);
+  const storage = getStorage(app);
+
+
 
   const [formData, setFormData] = useState({
     productName: '',
@@ -15,6 +35,7 @@ function SellPage() {
     dateOfManufacture: '',
     dateOfPurchase: '',
     condition: '',
+    expectedToken: 0,
     productImage: null,
     receiptImage: null,
   });
@@ -30,7 +51,34 @@ function SellPage() {
     }
   };
 
-  const handleSave = () => {
+  const handleSave = async() => {
+    // Create a reference to the 'products' node in the database
+    const productsRef = ref(database, 'products');
+
+    // Push the formData to the database
+    const newProductRef = push(productsRef);
+
+    // Use set on the new product reference
+    // set(newProductRef, formData);
+
+    await set(newProductRef, { ...formData, productImage: null, receiptImage: null });
+
+    // Upload productImage if it exists
+    if (formData.productImage) {
+      const productImageRef = storageRef(storage, `productImages/${newProductRef.key}`);
+      await uploadBytes(productImageRef, formData.productImage);
+      const productImageURL = await getDownloadURL(productImageRef);
+      await update(newProductRef, { productImage: productImageURL });
+    }
+
+    // Upload receiptImage if it exists
+    if (formData.receiptImage) {
+      const receiptImageRef = storageRef(storage, `receiptImages/${newProductRef.key}`);
+      await uploadBytes(receiptImageRef, formData.receiptImage);
+      const receiptImageURL = await getDownloadURL(receiptImageRef);
+      await update(newProductRef, { receiptImage: receiptImageURL });
+    }
+
     console.log('Form Data:', formData);
   };
 
@@ -113,6 +161,20 @@ function SellPage() {
             label="Date Of Purchase"
             variant="outlined"
             value={formData.dateOfPurchase}
+            onChange={handleChange}
+          />
+        </div>
+
+        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px', justifyContent:"center" }}>
+          <Typography variant="h6" component="div" style={{ marginRight: '45px' }}>
+            Expected Tokens
+          </Typography>
+          <TextField
+            name="expectedToken"
+            label="Tokens"
+            variant="outlined"
+            type="number" 
+            value={formData.expectedToken}
             onChange={handleChange}
           />
         </div>
