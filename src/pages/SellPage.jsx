@@ -8,6 +8,8 @@ import { styled } from '@mui/material/styles';
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, push, set, update } from 'firebase/database';
 import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function SellPage() {
 
@@ -52,18 +54,12 @@ function SellPage() {
   };
 
   const handleSave = async() => {
-    // Create a reference to the 'products' node in the database
+
     const productsRef = ref(database, 'products');
-
-    // Push the formData to the database
     const newProductRef = push(productsRef);
-
-    // Use set on the new product reference
-    // set(newProductRef, formData);
 
     await set(newProductRef, { ...formData, productImage: null, receiptImage: null });
 
-    // Upload productImage if it exists
     if (formData.productImage) {
       const productImageRef = storageRef(storage, `productImages/${newProductRef.key}`);
       await uploadBytes(productImageRef, formData.productImage);
@@ -71,13 +67,14 @@ function SellPage() {
       await update(newProductRef, { productImage: productImageURL });
     }
 
-    // Upload receiptImage if it exists
     if (formData.receiptImage) {
       const receiptImageRef = storageRef(storage, `receiptImages/${newProductRef.key}`);
       await uploadBytes(receiptImageRef, formData.receiptImage);
       const receiptImageURL = await getDownloadURL(receiptImageRef);
       await update(newProductRef, { receiptImage: receiptImageURL });
     }
+
+    toast.success('Form Submitted Successfully');
 
     console.log('Form Data:', formData);
   };
@@ -226,7 +223,7 @@ function SellPage() {
         </Button>
       </div>
 
-      
+      <ToastContainer />
 
     </div>
   )

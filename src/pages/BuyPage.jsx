@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
@@ -7,6 +7,9 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { ethers } from 'ethers';
 import { useSigner } from "@thirdweb-dev/react";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import CircularProgress from '@mui/material/CircularProgress';
 
 import Navbar from '../componets/Navbar'
 
@@ -320,6 +323,8 @@ function BuyPage() {
   const signer = useSigner();
   // console.log(signer.getAddress());
 
+  const [loading, setLoading] = useState(false);
+
   const cardData = [
   {
     image:'src/assets/capacitor2.jpg',
@@ -390,6 +395,8 @@ function BuyPage() {
 
    const handleBuy = async (price) => {
     try {
+      setLoading(true);
+
       const recipientAddress = '0xCB511d1366cDED23FE9FBBd8FA0D9b6160BC55AC';
       const contract = new ethers.Contract(contractAddress, contractABI, signer);
       const priceInWei = ethers.utils.parseEther(price);
@@ -408,8 +415,12 @@ function BuyPage() {
       await transaction.wait();
 
       console.log(`Tokens transferred successfully to ${recipientAddress}`);
+      toast.success('Transaction completed successfully');
     } catch (error) {
       console.error('Error transferring tokens:', error);
+    }
+    finally {
+      setLoading(false);
     }
   };
 
@@ -435,12 +446,13 @@ function BuyPage() {
               </Typography>
             </CardContent>
             <CardActions>
-              <Button size="small" onClick={() => handleBuy(card.price)}>Buy</Button>
+              <Button size="small" onClick={() => handleBuy(card.price)}>{loading ? <CircularProgress size={20} /> : 'Buy'}</Button>
               <Button size="small" href={card.verificationLink} target="_blank" rel="noopener noreferrer">Verification</Button>
             </CardActions>
           </Card>
         ))}
       </div>
+      <ToastContainer />
     </div>
   )
 }
